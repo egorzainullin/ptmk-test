@@ -23,7 +23,7 @@ public class DatabaseContext: DbContext
     {
         optionsBuilder.UseLazyLoadingProxies();
         optionsBuilder.UseSnakeCaseNamingConvention();
-        optionsBuilder.LogTo(Console.WriteLine);
+        // optionsBuilder.LogTo(Console.WriteLine);
         base.OnConfiguring(optionsBuilder);
     }
 }
@@ -33,10 +33,16 @@ public class Factory : IDesignTimeDbContextFactory<DatabaseContext>
     public DatabaseContext CreateDbContext(string[] args)
     {
         var options = new DbContextOptionsBuilder()
-            .UseNpgsql("Host=localhost;Port=5433;Database=postgres;Username=postgres;Password=postgres")
+            .UseNpgsql("Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=postgres")
             .Options;
 
         return new DatabaseContext(options);
+    }
+
+    public static DatabaseContext CreateDbContext()
+    {
+        var factory = new Factory();
+        return factory.CreateDbContext(Array.Empty<string>());
     }
 }
 

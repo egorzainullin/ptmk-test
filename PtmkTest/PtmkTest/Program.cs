@@ -1,5 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using Microsoft.EntityFrameworkCore;
+using PtmkTest.Core;
 using PtmkTest.Data.Users;
 
 namespace PtmkTest;
@@ -11,14 +13,21 @@ public static class Program
         var factory = new Factory();
         using (var context = factory.CreateDbContext(Array.Empty<string>()))
         {
-            context.Users.Add(new UserDbModel()
+            var core = new CoreAction(context);
+            core.AddTable();
+            var user = new User()
             {
                 DateOfBirth = DateTime.UtcNow,
-                Name = "Test",
+                Name = "Test 1",
                 Sex = Sex.Male
-            });
-            context.SaveChanges();
-            Console.WriteLine(context.Users);
+            };
+            core.CreateUser(user);
+            var users = core.GetAllUsers();
+            foreach (var u in users)
+            {
+                Console.WriteLine(u);
+                
+            }
         }
     }
 }

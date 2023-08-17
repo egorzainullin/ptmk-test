@@ -1,14 +1,9 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using PtmkTest.Core;
 
 namespace PtmkTest.Data.Users;
-
-public enum Sex
-{
-    Male = 0,
-    Female = 1
-}
 
 public class UserDbModel
 {
@@ -20,6 +15,17 @@ public class UserDbModel
     public DateTime DateOfBirth { get; set; }
     
     public Sex Sex { get; set; }
+
+    public User ToUser()
+    {
+        return new User()
+        {
+            Id = Id,
+            DateOfBirth = DateOfBirth,
+            Name = Name,
+            Sex = Sex
+        };
+    }
 }
 
 internal class Map : IEntityTypeConfiguration<UserDbModel>
