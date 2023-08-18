@@ -56,6 +56,10 @@ public static class Program
                 var usersToPrint = builder.ToString();
                 Console.WriteLine(usersToPrint );
             }
+            else if (args[0] == "4")
+            {
+                core.InitMillionRows();
+            }
         }
     }
 }

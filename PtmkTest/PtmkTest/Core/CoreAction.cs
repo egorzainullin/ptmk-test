@@ -40,11 +40,31 @@ public class CoreAction
     {
         var users =
             _context.Users
-                .Select(x => x.ToUser())
-                .ToList()
-                .DistinctBy(x => new { x.Name, x.DateOfBirth })
-                .OrderBy(x => x.Name)
+                .GroupBy(x => new {x.Name, x.DateOfBirth})
+                .OrderBy(x => x.Key.Name)
+                .Select(g => g.Select(x=> x.ToUser()).First())
                 .ToList();
         return users;
+    }
+
+    public void InitMillionRows()
+    {
+        var users = _context.Users;
+        var initialDate = new DateTime(1900, 02, 22, 0, 0, 0, DateTimeKind.Utc);
+        for (int i = 0; i < 100; ++i)
+        {
+            var name = $"F{i}";
+            var date = initialDate.AddYears(i);
+            var sex = Sex.Male;
+            var user = new User()
+            {
+                Name = name,
+                DateOfBirth = date,
+                Sex = sex
+            };
+            CreateUser(user);
+        }
+        // TODO add other
+        _context.SaveChanges();
     }
 }
