@@ -13,7 +13,7 @@ public class CoreAction
     }
 
 
-    public void AddTable()
+    public void AddTableUser()
     {
         _context.Database.Migrate();
     }
@@ -41,6 +41,7 @@ public class CoreAction
         var users =
             _context.Users
                 .Select(x => x.ToUser())
+                .ToList()
                 .DistinctBy(x => new { x.Name, x.DateOfBirth })
                 .OrderBy(x => x.Name)
                 .ToList();

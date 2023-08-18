@@ -1,8 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using Microsoft.EntityFrameworkCore;
+using System.Text;
 using PtmkTest.Core;
-using PtmkTest.Data.Users;
 
 namespace PtmkTest;
 
@@ -10,23 +9,52 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        var factory = new Factory();
-        using (var context = factory.CreateDbContext(Array.Empty<string>()))
+        using (var context = Factory.CreateDbContext())
         {
             var core = new CoreAction(context);
-            core.AddTable();
-            var user = new User()
+            if (args.Length == 0)
             {
-                DateOfBirth = DateTime.UtcNow,
-                Name = "Test 1",
-                Sex = Sex.Male
-            };
-            core.CreateUser(user);
-            var users = core.GetAllUsers();
-            foreach (var u in users)
+            }
+            else if (args[0] == "1")
             {
-                Console.WriteLine(u);
-                
+                core.AddTableUser();
+            }
+            else if (args[0] == "2")
+            {
+                if (args.Length != 4)
+                {
+                    throw new ArgumentException("Incorrect number of arguments");
+                }
+
+                var name = args[1];
+                if (!DateTime.TryParse(args[2], out var date))
+                {
+                    throw new ArgumentException("Date is not correct");
+                }
+
+                date = new DateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second,
+                    DateTimeKind.Utc);
+                var sex = args[3] == "Male" ? Sex.Male : Sex.Female;
+                var user = new User()
+                {
+                    DateOfBirth = date,
+                    Name = name,
+                    Sex = sex
+                };
+                core.CreateUser(user);
+            }
+            else if (args[0] == "3")
+            {
+                var uniqueUsers = core.GetAllUniqueUsers();
+                var builder = new StringBuilder();
+                foreach (var uniqueUser in uniqueUsers)
+                {
+                    var years = AgeCalculator.GetAgeInYears(uniqueUser.DateOfBirth);
+                    builder.AppendLine($"{uniqueUser} y.o.: {years}");
+                }
+
+                var usersToPrint = builder.ToString();
+                Console.WriteLine(usersToPrint );
             }
         }
     }
