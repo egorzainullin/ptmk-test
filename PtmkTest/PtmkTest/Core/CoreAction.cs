@@ -64,7 +64,19 @@ public class CoreAction
             };
             CreateUser(user);
         }
-        // TODO add other
+        for (int i = 100; i < 1000000; i++)
+        {
+            var name = $"X{i}";
+            var date = initialDate.AddYears(i % 20).AddMonths(i % 11).AddDays(i % 70);
+            var sex = i % 2 == 0 ? Sex.Male : Sex.Female;
+            var user = new User()
+            {
+                Name = name,
+                DateOfBirth = date,
+                Sex = sex
+            };
+            CreateUser(user);
+        }
         _context.SaveChanges();
     }
 }
