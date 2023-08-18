@@ -38,12 +38,16 @@ public class CoreAction
 
     public List<User> GetAllUniqueUsers()
     {
-        var users =
+        var usersDbModels =
             _context.Users
-                .GroupBy(x => new {x.Name, x.DateOfBirth})
+                .GroupBy(x => new { x.Name, x.DateOfBirth })
                 .OrderBy(x => x.Key.Name)
-                .Select(g => g.Select(x=> x.ToUser()).First())
-                .ToList();
+                .Select(g => g.First());
+                // .ToList()
+                // .DistinctBy(x => new {x.Name, x.DateOfBirth})
+                // .OrderBy(x => x.Name)
+                // .Select(x => x.ToUser())
+        var users = usersDbModels.ToList().Select(x => x.ToUser()).ToList();
         return users;
     }
 
@@ -56,26 +60,28 @@ public class CoreAction
             var name = $"F{i}";
             var date = initialDate.AddYears(i);
             var sex = Sex.Male;
-            var user = new User()
+            var user = new UserDbModel()
             {
                 Name = name,
                 DateOfBirth = date,
                 Sex = sex
             };
-            CreateUser(user);
+            users.Add(user);
         }
-        for (int i = 100; i < 1000000; i++)
+
+        int numberOfRows = 1000000;
+        for (int i = 100; i < numberOfRows; ++i)
         {
             var name = $"X{i}";
             var date = initialDate.AddYears(i % 20).AddMonths(i % 11).AddDays(i % 70);
             var sex = i % 2 == 0 ? Sex.Male : Sex.Female;
-            var user = new User()
+            var user = new UserDbModel()
             {
                 Name = name,
                 DateOfBirth = date,
                 Sex = sex
             };
-            CreateUser(user);
+            _context.Add(user);
         }
         _context.SaveChanges();
     }

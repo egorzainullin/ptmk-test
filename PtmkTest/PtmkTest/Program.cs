@@ -50,11 +50,12 @@ public static class Program
                 foreach (var uniqueUser in uniqueUsers)
                 {
                     var years = AgeCalculator.GetAgeInYears(uniqueUser.DateOfBirth);
-                    builder.AppendLine($"{uniqueUser} y.o.: {years}");
+                    var lineOfUser = $"{uniqueUser} y.o.: {years}";
+                    builder.AppendLine(lineOfUser);
                 }
 
                 var usersToPrint = builder.ToString();
-                Console.WriteLine(usersToPrint );
+                Console.WriteLine(usersToPrint);
             }
             else if (args[0] == "4")
             {
