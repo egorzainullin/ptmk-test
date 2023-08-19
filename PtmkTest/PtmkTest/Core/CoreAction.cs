@@ -40,14 +40,12 @@ public class CoreAction
     {
         var usersDbModels =
             _context.Users
-                .GroupBy(x => new { x.Name, x.DateOfBirth })
-                .OrderBy(x => x.Key.Name)
-                .Select(g => g.First());
-                // .ToList()
-                // .DistinctBy(x => new {x.Name, x.DateOfBirth})
-                // .OrderBy(x => x.Name)
-                // .Select(x => x.ToUser())
-        var users = usersDbModels.ToList().Select(x => x.ToUser()).ToList();
+                .ToList()
+                .DistinctBy(x => new { x.Name, x.DateOfBirth })
+                .OrderBy(x => x.Name)
+                .Select(x => x.ToUser());
+
+        var users = usersDbModels.ToList();
         return users;
     }
 
@@ -83,6 +81,17 @@ public class CoreAction
             };
             _context.Add(user);
         }
+
         _context.SaveChanges();
     }
+
+    public List<User> GetFMaleUsers()
+    {
+        var users = _context.Users
+            .Where(x => x.Name.StartsWith("F"))
+            .Select(x => x.ToUser())
+            .ToList();
+        return users;
+    }
 }
+

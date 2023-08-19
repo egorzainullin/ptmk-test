@@ -61,6 +61,23 @@ public static class Program
             {
                 core.InitMillionRows();
             }
+            else if (args[0] == "5")
+            {
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                var users = core.GetFMaleUsers();
+                var builder = new StringBuilder();
+                foreach (var user in users)
+                {
+                    var userLine = $"{user}";
+                    builder.AppendLine(userLine);
+                }
+
+                var usersToPrint = builder.ToString();
+                Console.WriteLine(usersToPrint);
+                watch.Stop();
+                var timeString = $"time: {watch.ElapsedMilliseconds} milliseconds";
+                Console.WriteLine(timeString);
+            }
         }
     }
 }
